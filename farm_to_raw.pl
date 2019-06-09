@@ -2,11 +2,14 @@
 
 use Mojo::JSON qw/decode_json/;
 use Mojo::CSV;
-use File::Slurp;
+use Mojo::UserAgent;
 use v5.10;
-use utf8;
 
-my $farm_data_filename = "farm_data.csv";
+binmode STDOUT, ":utf8";
+
+my $api_url = "http://page.board.tw/api/farm_news.php";
+
+my $farm_data_filename = "data/farm.csv";
 my $farm_data = {};
 for my $row (@{Mojo::CSV->new->slurp($farm_data_filename)}) {
     $farm_data->{$row->[0]} = {
@@ -16,7 +19,7 @@ for my $row (@{Mojo::CSV->new->slurp($farm_data_filename)}) {
 }
 
 my $fanpage_data = {};
-for my $row (@{Mojo::CSV->new->slurp("fanpage_data.csv")}) {
+for my $row (@{Mojo::CSV->new->slurp("data/fanpage.csv")}) {
     $fanpage_data->{$row->[0]} = {
         fanpage_name => $row->[1],
         fanpage_link => $row->[2],
@@ -31,9 +34,9 @@ sub find_farm_id {
     return "";
 }
 
-my $filename = "farm_news.json";
-my $bytes = read_file($filename, binmode => ":utf-8");
-my $data = decode_json $bytes;
+my $ua = Mojo::UserAgent->new;
+my $data = $ua->get($api_url)
+    ->result->json;
 
 my @rows = ();
 
@@ -50,6 +53,5 @@ for my $farm_news_id (keys %{$data->{data}}) {
         my $fanpage_id = $post->{fanpage_id};
         my $fanpage_name = $fanpage_data->{$fanpage_id}{fanpage_name} || $fanpage_id;
         say "$farm_news_id,$farm_news_title,$farm_news_url,$farm_id,$farm_name,$fanpage_id,$fanpage_name";
-        #say "$farm_news_title,$farm_id,$farm_name";
     }
 }

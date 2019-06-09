@@ -1,6 +1,15 @@
 
-Visualization on Facebook fan page stories
+Visualize Facebook fan page stories
 ===
 
-* http://page.board.tw/api/farm_news.php
-* http://page.board.tw/farm/news/
+Data taken from <http://page.board.tw/farm/news/>
+
+Visualizations made with [RAWGraphics](https://rawgraphs.io/)
+
+## Usage
+
+```shell
+$ eval $(perl -Mlocal::lib=./local)
+$ carton
+$ ./farm_to_raw.pl > raw.csv
+```
