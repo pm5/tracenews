@@ -40,7 +40,7 @@ my $data = $ua->get($api_url)
 
 my @rows = ();
 
-say "farm_news_id,farm_news_title,farm_news_url,farm_id,farm_name,fanpage_id,fanpage_name";
+say "farm_news_id,farm_news_title,farm_news_url,farm_id,farm_name,fanpage_id,fanpage_name,post_id";
 for my $farm_news_id (keys %{$data->{data}}) {
     my $farm_news = $data->{data}{$farm_news_id};
     my $farm_news_title = $farm_news->{title};
@@ -51,7 +51,8 @@ for my $farm_news_id (keys %{$data->{data}}) {
     for my $fanpage_post_id (keys %{$farm_news->{posts}}) {
         my $post = $farm_news->{posts}{$fanpage_post_id};
         my $fanpage_id = $post->{fanpage_id};
+        my $post_id = $post->{post_id};
         my $fanpage_name = $fanpage_data->{$fanpage_id}{fanpage_name} || $fanpage_id;
-        say "$farm_news_id,$farm_news_title,$farm_news_url,$farm_id,$farm_name,$fanpage_id,$fanpage_name";
+        say "$farm_news_id,$farm_news_title,$farm_news_url,$farm_id,$farm_name,$fanpage_id,$fanpage_name,$post_id";
     }
 }
